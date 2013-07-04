@@ -115,15 +115,6 @@ void loop() {
     Serial.print("0");
   }
   Serial.print(" ");   
-
-  Serial.print("A:");
-  if(wiiClassy.aPressed()){
-    Serial.print("1");
-  } 
-  else {
-    Serial.print("0");
-  }
-  Serial.print(" ");
   
   Serial.print("DU:");
   if(wiiClassy.upDPressed()){
