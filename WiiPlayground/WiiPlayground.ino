@@ -5,20 +5,20 @@ WiiClassic wiiClassy = WiiClassic();
 
 int m3dir = 2;
 int m3pwm = 3;
-int m4dir = 4;
-int m4pwm = 5;
+int m1dir = 4;
+int m1pwm = 5;
 
 void setup() {
   Wire.begin();                                                           // Begin wire connection
   Serial.begin(9600);                                                     // Begin Serial on 9600 baud
   wiiClassy.begin();                                                      // Initialize the Wii Classic controller
   wiiClassy.update();                                                     // Gather data from the controller for the first time as this isually bogus
-  
+
   pinMode(m3dir, OUTPUT);
   pinMode(m3pwm, OUTPUT);
-  pinMode(m4dir, OUTPUT);
-  pinMode(m4pwm, OUTPUT);
-  
+  pinMode(m1dir, OUTPUT);
+  pinMode(m1pwm, OUTPUT);
+
   Serial.println("Setup complete");
 }
 
@@ -127,7 +127,7 @@ void loop() {
     Serial.print("0");
   }
   Serial.print(" ");   
-  
+
   Serial.print("DU:");
   if(wiiClassy.upDPressed()){
     Serial.print("1");    
@@ -136,16 +136,16 @@ void loop() {
     Serial.print("0");
   }
   Serial.print(" ");
-    
+
   Serial.print("DD:");
   if(wiiClassy.downDPressed()){
     Serial.print("1");
-      } 
+  } 
   else {
     Serial.print("0");
   }
   Serial.print(" ");
-    
+
   Serial.print("DL:");
   if(wiiClassy.leftDPressed()){
     Serial.print("1");
@@ -154,7 +154,7 @@ void loop() {
     Serial.print("0");
   }
   Serial.print(" ");
-    
+
   Serial.print("DR:");
   if(wiiClassy.rightDPressed()){
     Serial.print("1");
@@ -163,13 +163,13 @@ void loop() {
     Serial.print("0");
   }
   Serial.print(" ");
-  
+
   Serial.print("LJ:");
   Serial.print(wiiClassy.leftStickX());
   Serial.print(",");
   Serial.print(wiiClassy.leftStickY());
   Serial.print(" ");
-    
+
   Serial.print("RJ:");
   Serial.print(wiiClassy.rightStickX());
   Serial.print(",");
@@ -177,12 +177,12 @@ void loop() {
   Serial.print(" ");
 
   Serial.println();
-  
+
   int rightPower = 0;
   int leftPower = 0;
   int rightDirection = HIGH;
   int leftDirection = HIGH;
-  
+
   int rightY = wiiClassy.rightStickY();
   if(rightY > 16)
   {
@@ -194,7 +194,7 @@ void loop() {
     rightDirection = LOW;
     rightPower = map(rightY, 13, 2, 1, 250);
   }
-  
+
   int leftY = wiiClassy.leftStickY();
   if(leftY > 33)
   {
@@ -206,24 +206,25 @@ void loop() {
     leftDirection = LOW;
     leftPower = map(leftY, 30, 6, 1, 250);
   }
-  
+
   Serial.print("direction:");
   Serial.print(rightDirection);
-  
+
   Serial.print(" ");
-  
+
   Serial.print("rightPower: ");
   Serial.print(rightPower);
   Serial.println();
-  
-  digitalWrite(m4dir, leftDirection);
+
+  digitalWrite(m1dir, leftDirection);
   digitalWrite(m3dir, rightDirection);
-  
-  analogWrite(m4pwm, leftPower);
+
+  analogWrite(m1pwm, leftPower);
   analogWrite(m3pwm, rightPower);
-  
+
   delay(100);
 }
+
 
 
 
