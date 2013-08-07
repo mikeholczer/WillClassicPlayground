@@ -3,10 +3,18 @@
 
 WiiClassic wiiClassy = WiiClassic();
 
-int m3dir = 2;
-int m3pwm = 3;
-int m1dir = 4;
-int m1pwm = 5;
+int rightFrontDir = 2;
+int rightFrontPwm = 3;
+
+int leftFrontDir = 4;
+int leftFrontPwm = 5;
+
+int rightBackDir = 12;
+int rightBackPwm = 11;
+
+int leftBackDir = 8;
+int leftBackPwm = 9;
+
 
 void setup() {
   Wire.begin();                                                           // Begin wire connection
@@ -14,10 +22,15 @@ void setup() {
   wiiClassy.begin();                                                      // Initialize the Wii Classic controller
   wiiClassy.update();                                                     // Gather data from the controller for the first time as this isually bogus
 
-  pinMode(m3dir, OUTPUT);
-  pinMode(m3pwm, OUTPUT);
-  pinMode(m1dir, OUTPUT);
-  pinMode(m1pwm, OUTPUT);
+  pinMode(rightFrontDir, OUTPUT);
+  pinMode(rightFrontPwm, OUTPUT);
+  pinMode(leftFrontDir, OUTPUT);
+  pinMode(leftFrontPwm, OUTPUT);
+
+  pinMode(rightBackDir, OUTPUT);
+  pinMode(rightBackPwm, OUTPUT);
+  pinMode(leftBackDir, OUTPUT);
+  pinMode(leftBackPwm, OUTPUT);
 
   Serial.println("Setup complete");
 }
@@ -178,52 +191,71 @@ void loop() {
 
   Serial.println();
 
-  int rightPower = 0;
-  int leftPower = 0;
-  int rightDirection = HIGH;
-  int leftDirection = HIGH;
+  int rightFrontPower = 0;
+  int leftFrontPower = 0;
+  int rightFrontDirection = HIGH;
+  int leftFrontDirection = HIGH;
+
+  int rightBackPower = 0;
+  int leftBackPower = 0;
+  int rightBackDirection = HIGH;
+  int leftBackDirection = HIGH;
 
   int rightY = wiiClassy.rightStickY();
   if(rightY > 16)
   {
-    rightDirection = HIGH;
-    rightPower = map(rightY, 17, 28, 1, 250);
+    moveRightWheels(map(rightY, 17, 28, 1, 250), true);
   }
-  if(rightY < 14)
+  else if(rightY < 14)
   {
-    rightDirection = LOW;
-    rightPower = map(rightY, 13, 2, 1, 250);
+    moveRightWheels(map(rightY, 13, 2, 1, 250), false);
+  }
+  else{
+    moveRightWheels(0, true);
   }
 
   int leftY = wiiClassy.leftStickY();
   if(leftY > 33)
   {
-    leftDirection = HIGH;
-    leftPower = map(leftY, 34, 57, 1, 250);
+    moveLeftWheels(map(leftY, 34, 57, 1, 250), true);
   }
-  if(leftY < 31)
+  else if(leftY < 31)
   {
-    leftDirection = LOW;
-    leftPower = map(leftY, 30, 6, 1, 250);
+    moveLeftWheels(map(leftY, 30, 6, 1, 250), false);
   }
-
-  Serial.print("direction:");
-  Serial.print(rightDirection);
-
-  Serial.print(" ");
-
-  Serial.print("rightPower: ");
-  Serial.print(rightPower);
-  Serial.println();
-
-  digitalWrite(m1dir, leftDirection);
-  digitalWrite(m3dir, rightDirection);
-
-  analogWrite(m1pwm, leftPower);
-  analogWrite(m3pwm, rightPower);
+  else {
+    moveLeftWheels(0, true);
+  }
 
   delay(100);
 }
+
+void moveLeftWheels(int power, boolean isForward){
+  if(isForward){
+    digitalWrite(leftFrontDir, HIGH);
+    digitalWrite(leftBackDir, LOW);
+  }
+  else{
+    digitalWrite(leftFrontDir, LOW);
+    digitalWrite(leftBackDir, HIGH);
+  }
+  analogWrite(leftFrontPwm, power);
+  analogWrite(leftBackPwm, power);
+}
+
+void moveRightWheels(int power, boolean isForward){
+  if(isForward){
+    digitalWrite(rightFrontDir, HIGH);
+    digitalWrite(rightBackDir, LOW);
+  }
+  else{
+    digitalWrite(rightFrontDir, LOW);
+    digitalWrite(rightBackDir, HIGH);
+  }
+  analogWrite(rightFrontPwm, power);
+  analogWrite(rightBackPwm, power);
+}
+
 
 
 
